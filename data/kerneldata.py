@@ -141,7 +141,7 @@ class KERNELData(data.Dataset):
             lrs = np.array(common.set_channel(*lrs, n_channels=self.args.n_colors))
             lr_tensors = common.np2Tensor(*lrs,  rgb_range=self.args.rgb_range, n_colors=self.args.n_colors)
             
-            return torch.stack(lr_tensors), None, None, filenames
+            return torch.stack(lr_tensors), filenames
         else:
             if self.args.process:
                 lrs, hrs, kernels, filenames = self._load_file_from_loaded_data(idx)

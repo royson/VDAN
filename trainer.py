@@ -146,7 +146,11 @@ class Trainer_VDAN:
         self.ckp.start_log(train=False, key='ssim')
         with torch.no_grad():
             tqdm_test = tqdm(self.loader_test, ncols=80)
-            for idx_img, (lr, hr, kernels, filename) in enumerate(tqdm_test):
+            for idx_img, data_pack in enumerate(tqdm_test):
+                if self.args.real:
+                    lr, filename = data_pack
+                else:    
+                    lr, hr, kernels, filename = data_pack
                 ycbcr_flag = False
                 filename = filename[len(filename)//2]
                 # lr: [batch_size, n_seq, 3, patch_size, patch_size]
