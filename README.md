@@ -1,7 +1,10 @@
 # VDAN
 This is an official implementation of VDAN:Temporal Kernel Estimation for Blind Video Super-Resolution 
+
 The overall code frame work is based on [EDSR](https://github.com/thstkdgus35/EDSR-PyTorch/tree/master/src)
+
 The training data-preprocess is consist with previous works [IKC](https://github.com/yuanjunchai/IKC)  and [DAN](https://github.com/greatlog/DAN)
+
 For the PCD and TSA module, we adopted implementation from [EDVR](https://github.com/xinntao/EDVR/)
 
 ## Dependencies
