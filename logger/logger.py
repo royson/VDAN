@@ -9,7 +9,7 @@ import math
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-
+from skimage import img_as_ubyte
 
 class Logger:
     def __init__(self, args):
@@ -76,14 +76,14 @@ class Logger:
             os.makedirs(os.path.dirname(filename))
         postfix = ['SR']
         for img, post in zip(save_list, postfix):
-            img = img[0].data.mul(255 / self.args.rgb_range)
+            img = img[0].data
             img = np.transpose(img.cpu().numpy(), (1, 2, 0))
             if img.shape[2] == 1:
                 img = img.squeeze(axis=2)
             elif img.shape[2] == 3 and self.args.n_colors == 1:
                 img = sc.ycbcr2rgb(img.astype('float')).clip(0, 1)
                 img = (255 * img).round().astype('uint8')
-            imageio.imwrite('{}{}.png'.format(filename, post), img)
+            imageio.imsave('{}{}.png'.format(filename, post), img_as_ubyte(img)
             
 
     def start_log(self, train=True, key='final'):
