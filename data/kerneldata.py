@@ -90,7 +90,7 @@ class KERNELData(data.Dataset):
             for idx in range(n_videos):
                 if idx % 10 == 0:
                     print("Loading vide %d" %idx)
-                lrs = self._load_file(idx)
+                lrs, _, _, _ = self._load_file(idx)
                 lrs = np.array([imageio.imread(lr_name) for lr_name in self.images_lr[idx]])
                 data_lr.append(lrs)
             return None, data_lr, None
@@ -201,7 +201,7 @@ class KERNELData(data.Dataset):
             f_lrs = self.images_lr[video_idx][frame_idx:frame_idx+self.n_seq]
             filenames = [os.path.split(os.path.dirname(file))[-1] + '.' + os.path.splitext(os.path.basename(file))[0] for file in f_lrs]
             lrs = np.array([imageio.imread(lr_name) for lr_name in f_lrs])
-            return lrs, filenames
+            return lrs, None, None, filenames
 
         else:
             n_poss_frames = [n - self.n_seq + 1 for n in self.n_frames_video]
@@ -225,7 +225,7 @@ class KERNELData(data.Dataset):
             f_lrs = self.images_lr[video_idx][frame_idx:frame_idx+self.n_seq]
             lrs = self.data_lr[video_idx][frame_idx:frame_idx+self.n_seq]
             filenames = [os.path.split(os.path.dirname(file))[-1] + '.' + os.path.splitext(os.path.basename(file))[0] for file in f_lrs]
-            return lrs, filenames
+            return lrs, None, None, filenames
         else:
             idx = self._get_index(idx)
             n_poss_frames = [n - self.n_seq + 1 for n in self.n_frames_video]

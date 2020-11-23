@@ -1,7 +1,6 @@
 import os
 
 from data import common
-from data import srdata
 from data import kerneldata
 
 import numpy as np
