@@ -145,7 +145,7 @@ parser.add_argument('--code_size', type=int, default=13,
                     help='pca kernel size for estimation')
 parser.add_argument('--dan_iter', type=int, default=4,
                     help='iteration that DAN running')
-parser.add_argument('--real_kernel', type=float, default=0.1,
+parser.add_argument('--real_kernel', type=float, default=0.0,
                     help='percentage of using real world kernel for training')
 parser.add_argument('--real_kernel_path', type=str, default='../dataset/REDS4/sth_kernel',
                     help='path of real world kernel')
