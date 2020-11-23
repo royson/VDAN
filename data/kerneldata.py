@@ -136,7 +136,7 @@ class KERNELData(data.Dataset):
             ix = random.randrange(0, iw - ip + 1)
             iy = random.randrange(0, ih - ip + 1)
 
-            patches = [self.get_patch(lr, None, ix, iy) for lr, hr in zip(lrs, None)]
+            patches = [self.get_patch(lr, None, ix, iy) for lr in lrs]
             lrs = np.array([patch[0] for patch in patches])
             lrs = np.array(common.set_channel(*lrs, n_channels=self.args.n_colors))
             lr_tensors = common.np2Tensor(*lrs,  rgb_range=self.args.rgb_range, n_colors=self.args.n_colors)
