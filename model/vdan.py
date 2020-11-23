@@ -3,9 +3,10 @@ import torch
 import torch.nn as nn
 import math
 import torch.nn.functional as F
-from .videoalign import align_net_w_feat, VSR_Rec, PCDAlignment, TSAFusion, Res_Block, make_layer
+from .blocks import PCDAlignment, TSAFusion, Res_Block, make_layer
+
 def make_model(args):
-    return VDANPCDTSA(args)
+    return VDAN(args)
 
 class CALayer(nn.Module):
     def __init__(self, nf, reduction=16):
@@ -146,7 +147,7 @@ class Restorer(nn.Module):
 
         return out, fea  # torch.clamp(out, min=self.min, max=self.max)
 
-class VDANPCDTSA(nn.Module):
+class VDAN(nn.Module):
     def __init__(
         self,
         args,
@@ -154,14 +155,14 @@ class VDANPCDTSA(nn.Module):
         nb=16,
         pca_matrix_path='experiment/pca_matrix_{}_codelen_{}.pth',
     ):
-        super(VDANPCDTSA, self).__init__()
+        super(VDAN, self).__init__()
 
         self.ksize = args.k_size
         self.loop = args.dan_iter
         self.scale = args.scale
         self.n_seq = args.n_sequence
         self.code_size = args.code_size
-        self.name = 'VDANPCDTSA'
+        self.name = 'VDAN'
 
         pca_matrix_path= pca_matrix_path.format(str(self.scale), str(self.code_size))
 

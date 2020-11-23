@@ -18,7 +18,6 @@ def set_template(args):
                                     "SEQ",str(args.n_sequence), args.model))
         else:
             args.save = '_'.join((args.template, args.data_test, args.task, 
-                                    'Noise', str(args.noise), 'Real_kernel', str(args.real_kernel), 
-                                     "SEQ",str(args.n_sequence), args.model))
+                                    'Noise', str(args.noise), "SEQ",str(args.n_sequence), args.model))
     else:
         print('unknow template')

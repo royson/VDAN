@@ -15,12 +15,8 @@ class Logger:
     def __init__(self, args):
         self.args = args
         self.psnr_log = torch.Tensor()
+        self.ssim_log = torch.Tensor()
         self.loss_log = torch.Tensor()
-        self.psnr_log_iter_0 = torch.Tensor()
-        self.psnr_log_iter_1 = torch.Tensor()
-        self.psnr_log_iter_2 = torch.Tensor()
-        self.psnr_log_iter_3 = torch.Tensor()
-
 
         if args.load == '.':
             if args.save == '.':
@@ -33,6 +29,7 @@ class Logger:
             else:
                 self.loss_log = torch.load(self.dir + '/loss_log.pt')
                 self.psnr_log = torch.load(self.dir + '/psnr_log.pt')
+                self.ssim_log = torch.load(self.dir + '/ssim_log.pt')
                 print('Continue from epoch {}...'.format(len(self.psnr_log)))
         
         if args.cloud_save != '.':
@@ -61,32 +58,25 @@ class Logger:
             f.write('\n')
 
     def write_log(self, log):
-        print(log)
         self.log_file.write(log + '\n')
 
     def save(self, trainer, epoch, is_best):
-        if self.args.task == 'IKC':
-            trainer.model_C.save(self.dir, is_best, filename='C')
-            trainer.model_P.save(self.dir, is_best, filename='P')
-            trainer.model_F.save(self.dir, is_best, filename='F')
-        else: 
-            trainer.model.save(self.dir, is_best)
-            torch.save(self.loss_log, os.path.join(self.dir, 'loss_log.pt'))
-            torch.save(self.psnr_log, os.path.join(self.dir, 'psnr_log.pt'))
-            torch.save(trainer.optimizer.state_dict(), os.path.join(self.dir, 'optimizer.pt'))
-            self.plot_loss_log(epoch)
-            self.plot_psnr_log(epoch)
+        trainer.model.save(self.dir, is_best)
+        torch.save(self.loss_log, os.path.join(self.dir, 'loss_log.pt'))
+        torch.save(self.psnr_log, os.path.join(self.dir, 'psnr_log.pt'))
+        torch.save(self.ssim_log, os.path.join(self.dir, 'ssim_log.pt'))
+        torch.save(trainer.optimizer.state_dict(), os.path.join(self.dir, 'optimizer.pt'))
+        self.plot_loss_log(epoch)
+        self.plot_psnr_log(epoch)
 
     def save_images(self, filename, save_list, scale):
-        if self.args.task == 'KernelSR':
-            f = filename.split('.')
-            filename = '{}/result/{}/{}/{}_'.format(self.dir, self.args.data_test, f[0], f[1].zfill(8))
-            if not os.path.exists(os.path.dirname(filename)):
-                os.makedirs(os.path.dirname(filename))
-            postfix = ['SR']
+        f = filename.split('.')
+        filename = '{}/result/{}/{}/{}_'.format(self.dir, self.args.data_test, f[0], f[1].zfill(8))
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        postfix = ['SR']
         for img, post in zip(save_list, postfix):
             img = img[0].data.mul(255 / self.args.rgb_range)
-            print(img.shape)
             img = np.transpose(img.cpu().numpy(), (1, 2, 0))
             if img.shape[2] == 1:
                 img = img.squeeze(axis=2)
@@ -102,14 +92,8 @@ class Logger:
         else:
             if key == 'final':
                 self.psnr_log = torch.cat((self.psnr_log, torch.zeros(1)))
-            elif key == '0':
-                self.psnr_log_iter_0 = torch.cat((self.psnr_log, torch.zeros(1)))
-            elif key == '1':
-                self.psnr_log_iter_1 = torch.cat((self.psnr_log, torch.zeros(1)))
-            elif key == '2':
-                self.psnr_log_iter_2 = torch.cat((self.psnr_log, torch.zeros(1)))
-            elif key == '3':
-                self.psnr_log_iter_3 = torch.cat((self.psnr_log, torch.zeros(1)))
+            elif key == 'ssim':
+                self.ssim_log = torch.cat((self.ssim_log, torch.zeros(1)))
             
 
     def report_log(self, item, train=True, key='final'):
@@ -118,14 +102,8 @@ class Logger:
         else:
             if key == 'final':
                 self.psnr_log[-1] += item
-            elif key == '0':
-                self.psnr_log_iter_0[-1] += item
-            elif key == '1':
-                self.psnr_log_iter_1[-1] += item
-            elif key == '2':
-                self.psnr_log_iter_2[-1] += item
-            elif key == '3':
-                self.psnr_log_iter_3[-1] += item
+            elif key == 'ssim':
+                self.ssim_log[-1] += item
 
     def end_log(self, n_div, train=True, key='final'):
         if train:
@@ -133,14 +111,8 @@ class Logger:
         else:
             if key == 'final':
                 self.psnr_log[-1].div_(n_div)
-            elif key == '0':
-                self.psnr_log_iter_0[-1].div_(n_div)
-            elif key == '1':
-                self.psnr_log_iter_1[-1].div_(n_div)
-            elif key == '2':
-                self.psnr_log_iter_2[-1].div_(n_div)
-            elif key == '3':
-                self.psnr_log_iter_3[-1].div_(n_div)
+            elif key == 'ssim':
+                self.ssim_log[-1].div_(n_div)
 
     def plot_loss_log(self, epoch):
         # epoch = epoch - 1

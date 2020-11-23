@@ -1,9 +1,8 @@
 import os
 from importlib import import_module
-
 import torch
 import torch.nn as nn
-from ptflops import get_model_complexity_info
+
 
 class Model(nn.Module):
     def __init__(self, args, ckp, sr_model=True, pre_train='.'):
@@ -18,11 +17,6 @@ class Model(nn.Module):
 
         module = import_module('model.' + args.model.lower())
         self.model = module.make_model(args).to(self.device)
-        if self.args.test_only:
-            macs, params = get_model_complexity_info(self.model, (self.args.n_colors, self.args.patch_size, self.args.patch_size), as_strings=True, input_constructor=self.input_constructor,
-                                            print_per_layer_stat=True, verbose=True)
-            print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
-            print('{:<30}  {:<8}'.format('Number of parameters: ', params))
         if not args.cpu and args.n_GPUs > 1:
             self.model = nn.DataParallel(self.model, range(self.n_GPUs))
 

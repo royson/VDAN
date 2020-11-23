@@ -1,3 +1,6 @@
+'''
+Code are based on EDVR repo: https://github.com/xinntao/EDVR/blob/master/basicsr/
+'''
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -6,6 +9,18 @@ from torch.autograd import Variable, Function
 import math
 import numpy as np
 from .dcn.deform_conv import DeformConv, DCNv2Pack
+def make_layer(basic_block, num_basic_block, **kwarg):
+    """Make layers by stacking the same blocks.
+    Args:
+        basic_block (nn.module): nn.module class for basic block.
+        num_basic_block (int): number of blocks.
+    Returns:
+        nn.Sequential: Stacked blocks in nn.Sequential.
+    """
+    layers = []
+    for _ in range(num_basic_block):
+        layers.append(basic_block(**kwarg))
+    return nn.Sequential(*layers)
 
 class PCDAlignment(nn.Module):
     """Alignment module using Pyramid, Cascading and Deformable convolution

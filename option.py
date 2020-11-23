@@ -7,8 +7,6 @@ parser.add_argument('--debug', action='store_true',
                     help='Enables debug mode')
 parser.add_argument('--template', default='.',
                     help='You can set various templates in option.py')
-parser.add_argument('--task', type=str, default='Video',
-                    help='Type of task (Image/Video/MC)')
 
 # Hardware specifications
 parser.add_argument('--n_threads', type=int, default=6,
@@ -60,7 +58,7 @@ parser.add_argument('--n_frames_per_video', type=int, default=30,
 
 
 # Model specifications
-parser.add_argument('--model', default='ESPCN',
+parser.add_argument('--model', default='VDAN',
                     help='model name')
 parser.add_argument('--pre_train', type=str, default='.',
                     help='pre-trained model directory')
