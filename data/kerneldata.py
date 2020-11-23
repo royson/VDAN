@@ -120,9 +120,9 @@ class KERNELData(data.Dataset):
     def __getitem__(self, idx):
         if self.args.real:
             if self.args.process:
-                lrs, filenames = self._load_file_from_loaded_data(idx)
+                lrs,_, _, filenames = self._load_file_from_loaded_data(idx)
             else:
-                lrs, filenames = self._load_file(idx)
+                lrs,_, _, filenames = self._load_file(idx)
             
             if len(lrs.shape) == 4:
                 b, ih, iw, _ = lrs.shape
