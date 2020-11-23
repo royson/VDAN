@@ -13,11 +13,11 @@ def set_template(args):
         args.data_test = 'REDS4_Kernel'
         args.dir_data_test =  os.path.join(home, 'VDAN/dataset/')
         if args.test_only:
-            args.save = '_'.join((args.template, args.test_kernel_path, args.task, 
+            args.save = '_'.join((args.template, args.test_kernel_path,
                                     'Noise', str(args.noise), 'FIXKERNEL', str(args.fix_kernel),
                                     "SEQ",str(args.n_sequence), args.model))
         else:
-            args.save = '_'.join((args.template, args.data_test, args.task, 
+            args.save = '_'.join((args.template, args.data_test,
                                     'Noise', str(args.noise), "SEQ",str(args.n_sequence), args.model))
     else:
         print('unknow template')
