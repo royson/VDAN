@@ -83,7 +83,7 @@ class Logger:
             elif img.shape[2] == 3 and self.args.n_colors == 1:
                 img = sc.ycbcr2rgb(img.astype('float')).clip(0, 1)
                 img = (255 * img).round().astype('uint8')
-            imageio.imsave('{}{}.png'.format(filename, post), img_as_ubyte(img)
+            imageio.imsave('{}{}.png'.format(filename, post), img_as_ubyte(img))
             
 
     def start_log(self, train=True, key='final'):
