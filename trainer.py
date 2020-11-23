@@ -152,25 +152,26 @@ class Trainer_VDAN:
                 # lr: [batch_size, n_seq, 3, patch_size, patch_size]
                 if self.args.n_colors == 1 and lr.size()[2] == 3:
                     lr = lr[:, :, 0:1, :, :]
-                    hr = hr[:, :, 0:1, :, :]
+                    if not self.args.real:
+                        hr = hr[:, :, 0:1, :, :]
 
 
                 # Divide LR frame sequence [N, n_sequence, n_colors, H, W] -> N * [1, n_sequence, n_colors, H, W]
                 # We need seperate on first dimension because we want to keep sequence order when re-concact
                 lr = list(torch.split(lr, 1, dim = 0))
-                hr = list(torch.split(hr, 1, dim = 0))
-
-                center = self.args.n_sequence // 2
-                center_hr =  [x[:, center, :, :, :] for x in hr]
-                center_hr = [x.to(self.device) for x in center_hr]
-                center_hr = torch.cat(center_hr, dim = 0)
-
-                hr = [x.to(self.device) for x in hr]
-                hr = [torch.squeeze(x, dim = 0) for x in hr]
                 lr = [x.to(self.device) for x in lr]
                 lr = [torch.squeeze(x, dim = 0) for x in lr]
                 lr = torch.cat(lr, dim = 0)
-                hr = torch.cat(hr, dim = 0)
+                if not self.args.real:
+                    hr = list(torch.split(hr, 1, dim = 0))
+                    center = self.args.n_sequence // 2
+                    center_hr =  [x[:, center, :, :, :] for x in hr]
+                    center_hr = [x.to(self.device) for x in center_hr]
+                    center_hr = torch.cat(center_hr, dim = 0)
+
+                    hr = [x.to(self.device) for x in hr]
+                    hr = [torch.squeeze(x, dim = 0) for x in hr]
+                    hr = torch.cat(hr, dim = 0)
                 cur_kernel_pca = None
 
                 sr, _, _, = self.model(lr, cur_kernel_pca)
